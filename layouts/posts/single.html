@@ -9,6 +9,17 @@
     </p>
 
     <h1>{{ .Title }}</h1>
+    {{ with .GetTerms "tags" }}
+      <span id="tags" class="flex">
+        <i class="ri-price-tag-3-fill"></i>
+        {{ range . }}
+          <span>
+              <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
+          </span>
+        {{ end }}
+      </span>
+    {{ end }}
+
 
     {{ if .Params.toc }}
         <aside {{ if .Params.tocBorder }} class="toc" {{ end }}>

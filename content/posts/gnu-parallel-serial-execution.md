@@ -2,6 +2,8 @@
 title: "GNU Parallel for Serial Execution"
 date: 2023-06-10T15:22:38-04:00
 draft: false
+tags:
+    - gnu-parallel
 ---
 It's sometimes useful to use [GNU Parallel](https://www.gnu.org/software/parallel/) for running things serially. Why? Because it remembers
 what it's done, it can pick up where it left off, store output per job, and [a ton of other stuff](https://www.gnu.org/software/parallel/parallel_examples.html).

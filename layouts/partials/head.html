@@ -20,6 +20,8 @@
   <link rel="stylesheet" href="{{ $style.Permalink | relURL }}" integrity="{{ $style.Data.Integrity }}" />
   {{ if .Params.mathjax }} {{ partial "mathjax.html" . }} {{ end }}
 
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@2.2.0/fonts/remixicon.css" rel="stylesheet">
+
   <style type="text/css" media="screen">
    .highlight code {
        padding: 0;
@@ -46,6 +48,10 @@
        html, body {
            background: #fcf5ee;
        }
+   }
+
+   i {
+       vertical-align: bottom;
    }
 
   </style>
