@@ -6,3 +6,8 @@ title = 'dan lamanna'
 [params]
   [params.theme_config]
     back_home_text = "home"
+
+
+[markup]
+  [markup.highlight]
+    style = 'doom-one2'
