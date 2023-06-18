@@ -130,9 +130,6 @@ This is a simple parser that only works in the most obvious cases, but we could 
 - Add wildcards   
   There's no reason we can't translate certain tokens as having wildcards and return an ANDed `Q` object e.g. `author:dan*lamanna` => `Q(author__startswith='dan') & Q(author__endswith='lamanna')`
 
-
-tl;dr - PyParsing is concise, [well-documented](https://pyparsing-docs.readthedocs.io/en/latest/HowToUsePyparsing.html), and has [plenty of examples](https://github.com/pyparsing/pyparsing/tree/master/examples) to build parsers with.
-
 Our final parser, with the example query, looks like this:
 {{< highlight python >}}
 from django.db.models import Q
