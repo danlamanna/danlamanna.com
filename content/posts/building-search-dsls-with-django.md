@@ -6,7 +6,7 @@ tags:
     - django
     - search
 ---
-Searching features span from free text (think Google) to raw data access (think SQL). In between, there's a wide range of options for narrowing a search that are often provided with UI elements. But what if there are too many fields for a UI interface to search on? Search DSLs can provide a way to give a user more granular access to searching without exposing an overly complicated interface.
+Search capabilities span from free text (think Google) to raw data access (think SQL). In between, there's a wide range of options for narrowing a search that are often provided with UI elements. But what if there are too many fields for a UI to search on? Search DSLs can give a user more granular access to searching without exposing an overly complicated interface.
 
 GitHub issues provide a DSL that's accompanied by UI elements. An example query for searching issues would be:
 {{< highlight text >}}
@@ -14,7 +14,7 @@ is:open author:danlamanna
 {{< / highlight >}}
 
 We can create something similar for use in a custom Django application. Taking this example means building a DSL that:
-1. Supports filtering by a status of either open or closed
+1. Supports filtering by a status of either *open* or *closed*
 2. Supports filtering by an author username
 3. Implicitly conjoins the status and author filter (AND them together)
 
@@ -38,7 +38,7 @@ pp.one_of('open closed').parse_string(' open   ')
 # ParseResults(['open'], {})
 {{< / highlight >}}
 
-This works and lets us take an input string and return a set of `ParseResults` that we can build queries from! Since we need to only consider an open or closed status after `is:` we need to create a `Keyword`. A `Keyword` is documented as a "Token to exactly match a specified string as a keyword, that is, it must be immediately followed by a non-keyword character." We can also use a `Literal` for the colon.
+This lets us take an input string and return a set of `ParseResults` that we can build database queries from! Since we need to only consider an open or closed status after `is:` we need to create a `Keyword`. A `Keyword` is documented as a "Token to exactly match a specified string as a keyword, that is, it must be immediately followed by a non-keyword character." We can also use a `Literal` for the colon.
 
 {{< highlight python >}}
 Is = pp.Keyword('is')
@@ -63,12 +63,12 @@ Perfect!
 Django has composable lookup objects for building queries called [Q objects](https://docs.djangoproject.com/en/4.2/topics/db/queries/#complex-lookups-with-q-objects). This means that `Q(foo='bar')` roughly translates to `WHERE foo = 'bar'` and `Q(foo='bar') | Q(baz='qux')` to `WHERE foo = 'bar' OR baz = 'qux'`. Since Q objects operate at the Django ORM layer, they're also resilient to injection attacks. Putting this together with our parser, we can generate `Q` objects from our input string.
 
 This should look like:
-{{< highlight text >}}
-is:closed                   => Q(status='closed')
-is:closed author:danlamanna => Q(status='closed') & Q(author='danlamanna')
-{{< / highlight >}}
+| search                      | Q object                                    |
+|-----------------------------|---------------------------------------------|
+| is:closed                   | Q(status='closed')                          |
+| is:closed author:danlamanna | Q(status='closed') & Q(author='danlamanna') |
 
-Right now PyParsing is returning a list of tokens in the `ParseResults` object. Using "parse actions" we can return what we want.
+Our `StatusTerm` currently returns a list of tokens in the `ParseResults` object. Using "parse actions" we can make it return the Q objects we want.
 
 Setting a parse action for a parser element is as simple as:
 {{< highlight python >}}
@@ -95,7 +95,7 @@ def author_to_q(results):
 
 This is similar to the `StatusTerm` with the exception that we accept a PyParsing `Word` for the value instead of an enumerated set of statuses.
 
-Remember, these elements are super composable, so now we can build our final parser with something like:
+These elements are easy to compose together, so now we can build our final parser:
 {{< highlight python >}}
 dsl = pp.OneOrMore(pp.Or([StatusTerm, AuthorTerm]))
 dsl.parse_string('author:danlamanna is:closed')
@@ -103,7 +103,7 @@ dsl.parse_string('author:danlamanna is:closed')
 {{< / highlight >}}
 
 ## 🤯 
-`pp.Or` says match *any* of the parser elements we give e.g. require the string specify a status OR an author, not both. `pp.OneOrMore` matches one or more of those terms, which is what lets the search specify a status and an author.
+`pp.Or` says match *any* of the parser elements we give e.g. require the string to specify a status OR an author, not both. `pp.OneOrMore` matches one or more of those terms, which is what lets the search specify a status and an author.
 
 Now we can parse any combination of strings that contain at least one of our search terms, and we'll get a list of `Q` objects that can compose with the bitwise AND operator to create a single `Q` object for the Django ORM.
 
@@ -126,7 +126,7 @@ This is a simple parser that only works in the most obvious cases, but we could 
 - Handle duplicated terms   
   Each DSL might want to handle this differently. Ours ignores duplicated terms without raising any sort of exception.
 - Add disjunction (OR) logic   
-  Even allow combining AND with OR, see, for instance `infixNotation` in PyParsing. This even supports nesting expressions with parentheses!
+  Even allow combining AND with OR, see, for instance how `infixNotation` in PyParsing works. This even supports nesting expressions with parentheses!
 - Add wildcards   
   There's no reason we can't translate certain tokens as having wildcards and return an ANDed `Q` object e.g. `author:dan*lamanna` => `Q(author__startswith='dan') & Q(author__endswith='lamanna')`
 
