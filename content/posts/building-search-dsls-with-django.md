@@ -132,3 +132,32 @@ This is a simple parser that only works in the most obvious cases, but we could 
 
 
 tl;dr - PyParsing is concise, [well-documented](https://pyparsing-docs.readthedocs.io/en/latest/HowToUsePyparsing.html), and has [plenty of examples](https://github.com/pyparsing/pyparsing/tree/master/examples) to build parsers with.
+
+Our final parser, with the example query, looks like this:
+{{< highlight python >}}
+from django.db.models import Q
+import pyparsing as pp
+import functools, operator
+
+Is = pp.Keyword('is')
+OpenClosed = pp.one_of('open closed')
+StatusTerm = Is + pp.Suppress(pp.Literal(':')) + OpenClosed
+
+@StatusTerm.set_parse_action
+def status_to_q(results):
+    return Q(status=results[1])
+
+AuthorTerm = pp.Keyword('author') + pp.Suppress(pp.Literal(':')) + pp.Word(pp.alphanums + '_')
+
+@AuthorTerm.set_parse_action
+def author_to_q(results):
+    return Q(author=results[1])
+
+dsl = pp.OneOrMore(pp.Or([StatusTerm, AuthorTerm]))
+search_str = 'author:danlamanna is:closed'
+filter_obj = functools.reduce(operator.and_,
+                              dsl.parse_string(search_str).as_list())
+
+# fetch all issues from the database that have a status of closed and an author of danlamanna
+issues = Issue.objects.filter(filter_obj)
+{{< / highlight >}}
