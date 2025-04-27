@@ -7,6 +7,14 @@ tags:
     - open-source
 Summary: "The Django REST Framework maintainer has removed access to thousands of community discussions, leaving even other maintainers pleading for read-only access. What does this mean for Django's ecosystem sustainability?"
 ---
+{{< rawhtml >}}
+<div class="notice-callout" style="display:flex;align-items:center">
+<div>⚠️</div>
+<p style="margin-left:10px;">As of 2025-04-27 it appears as though DRF has restored its issues.
+</p>
+</div>
+{{< /rawhtml >}}
+
 [Django REST Framework](https://www.django-rest-framework.org/), DRF, is a staple in the Django ecosystem with nearly 800,000 dependent repositories. It is the canonical package for nearly every Django application with a REST API. The maintainer has [recently disabled GitHub issues and discussions](https://github.com/orgs/encode/discussions/11) for the repository such that they can no longer be viewed. This has effectively removed access to thousands of discussions and cross-linkages for troubleshooting, bug reports, feature requests, and community-derived workarounds that countless developers could have stumbled upon when facing problems. Years of content the community has produced and relied on have been abruptly removed from the commons to such a degree that *even one of its own maintainers* is [pleading for read-only access](https://github.com/encode/django-rest-framework/pull/9660#issuecomment-2708169762). For contributors, what is the incentive to participate in this area of the open source community knowing your contributions can be wiped away in an instant?
 
 The official response is:
