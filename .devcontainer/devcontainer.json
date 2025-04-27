@@ -1,0 +1,17 @@
+{
+	"name": "Hugo",
+	"image": "mcr.microsoft.com/devcontainers/base:debian",
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {}
+	},
+	"forwardPorts": [1313],
+	"portsAttributes": {
+		"1313": {
+			"label": "hugo",
+			"onAutoForward": "notify"
+		}
+	},
+
+	"postStartCommand": "./hugo server",
+	"remoteUser": "vscode"
+}
